@@ -36,7 +36,7 @@ export function Sidebar() {
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='w-14 h-14 rounded-full transition-all duration-300 ease-in-out hover:bg-secondary'
+                    className='w-14 h-14 transition-all duration-300 ease-in-out hover:bg-secondary'
                   >
                     <item.icon className='h-6 w-6' />
                     <span className='sr-only'>{item.label}</span>
@@ -53,7 +53,7 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Sheet>
-                <SheetTrigger className='flex justify-center items-center w-14 h-14 rounded-full transition-all duration-300 ease-in-out hover:bg-secondary'>
+                <SheetTrigger className='flex justify-center items-center w-14 h-14 transition-all duration-300 ease-in-out hover:bg-secondary'>
                   <Wallet className='h-6 w-6' />
                   <span className='sr-only'>Connect Wallet</span>
                 </SheetTrigger>

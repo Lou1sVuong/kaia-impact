@@ -62,7 +62,7 @@ export default function CampaignPage() {
   return (
     <div className='min-h-screen bg-black p-8'>
       <div className='relative'>
-        <img src={campaign.image} alt='Campaign Cover' className='w-full h-[60vh] object-cover rounded-lg' />
+        <img src={campaign.image} alt='Campaign Cover' className='w-full h-[60vh] object-cover' />
         <div className='absolute bottom-0 left-0 w-full h-1'>
           <Progress value={progress} className='mt-2' />
         </div>
@@ -78,7 +78,7 @@ export default function CampaignPage() {
               <div className='flex items-center space-x-4'>
                 <img
                   src={`https://s2.coinmarketcap.com/static/img/coins/200x200/32880.png`}
-                  className='w-12 h-12  rounded-full flex items-center justify-center text-white'
+                  className='w-12 h-12 flex items-center justify-center text-white'
                 ></img>
                 <div>
                   <AddressCardHover address={campaign.owner} />
@@ -111,18 +111,18 @@ export default function CampaignPage() {
 
           {/* Sidebar */}
           <div className='lg:col-span-1'>
-            <div className='sticky top-4 space-y-6 bg-zinc-900 p-6 rounded-lg'>
+            <div className='sticky top-4 space-y-6 bg-zinc-900 p-6'>
               {/* Stats */}
               <div className='grid grid-cols-3 gap-4 mb-6'>
-                <div className='text-center border border-border p-4 rounded-lg'>
+                <div className='text-center border border-border p-4'>
                   <p className='text-2xl font-bold text-white'>{daysLeft}</p>
                   <p className='text-sm text-zinc-500'>Days Left</p>
                 </div>
-                <div className='text-center  border border-border p-4 rounded-lg'>
+                <div className='text-center  border border-border p-4'>
                   <p className='text-2xl font-bold text-white line-clamp-1'>{raisedAmount}</p>
                   <p className='text-sm text-zinc-500 '>Raised of {targetAmount}</p>
                 </div>
-                <div className='text-center  border border-border p-4 rounded-lg'>
+                <div className='text-center  border border-border p-4'>
                   <p className='text-2xl font-bold text-white'>{campaign.donators.length}</p>
                   <p className='text-sm text-zinc-500'>Total Backers</p>
                 </div>

@@ -15,15 +15,15 @@ export default function HeroSection() {
             </p>
             <Link
               href={'/campaigns'}
-              className='inline-flex bg-kaia hover:bg-opacity-80 text-black font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out items-center'
+              className='inline-flex bg-kaia hover:bg-opacity-80 text-black font-bold py-3 px-8  transition duration-300 ease-in-out items-center'
             >
               Get Started
               <ArrowRight className='ml-2 h-5 w-5' />
             </Link>
           </div>
           <div className='hidden lg:flex lg:w-1/2 justify-center'>
-            <div className='w-64 h-64 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-full border border-white bg-black flex items-center justify-center'>
-              <h1 className='text-[7rem] text-kaia'>{'{ & }'}</h1>
+            <div className='w-64 h-64 sm:w-72 sm:h-72 lg:w-96 lg:h-96flex items-center justify-center'>
+              <h1 className='text-[9rem] text-kaia'>{'{&}'}</h1>
             </div>
           </div>
         </div>
