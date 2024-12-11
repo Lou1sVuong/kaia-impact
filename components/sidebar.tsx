@@ -20,7 +20,7 @@ import { ModeToggle } from '@/components/mode-toggle'
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
   { href: '/campaigns', icon: LayoutDashboard, label: 'Campaigns' },
-  { href: '/create', icon: PlusCircle, label: 'Create Campaign' }
+  { href: '/campaigns/create', icon: PlusCircle, label: 'Create Campaign' }
 ]
 
 export function Sidebar() {

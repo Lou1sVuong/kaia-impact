@@ -3,8 +3,8 @@ import Link from 'next/link'
 
 export default function HeroSection() {
   return (
-    <div className='bg-black text-white min-h-screen flex items-center'>
-      <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
+    <div className='w-full bg-black text-white min-h-screen flex items-center justify-center'>
+      <div className='container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center'>
         <div className='flex flex-col lg:flex-row items-center justify-between'>
           <div className='lg:w-1/2 mb-10 lg:mb-0'>
             <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4'>

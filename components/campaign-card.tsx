@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Campaign } from '@/types/campaign'
-import { FolderIcon } from 'lucide-react'
 
 interface CampaignCardProps {
   id: number
@@ -43,8 +42,8 @@ export function CampaignCard({ id, campaign }: CampaignCardProps) {
   )
 }
 
-function formatKAIA(amount: bigint): string {
-  return (Number(amount) / 1e9).toFixed(2)
+function formatKAIA(amount: bigint): bigint {
+  return BigInt(amount) / BigInt(10 ** 18)
 }
 
 function truncateAddress(address: string): string {

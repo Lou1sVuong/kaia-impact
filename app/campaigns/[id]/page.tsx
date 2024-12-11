@@ -9,11 +9,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useCampaign } from '@/hooks/use-campaign'
 import AddressCardHover from '@/components/address-card-hover'
+import { toast } from '@/hooks/use-toast'
 
 export default function CampaignPage() {
   const params = useParams()
   const [campaign, setCampaign] = useState<Campaign | null>(null)
-  const { allCampaign } = useCampaign()
+  const { allCampaign, donateToCampaign } = useCampaign()
+  const [donateAmount, setDonateAmount] = useState<string>('')
 
   useEffect(() => {
     if (allCampaign.data) {
@@ -54,10 +56,45 @@ export default function CampaignPage() {
     )
   }
 
+  const handleDonate = async (amount: number) => {
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: 'Invalid amount',
+        description: 'Please enter a valid donation amount.'
+      })
+      return
+    }
+
+    try {
+      await donateToCampaign({ _id: params.id as string, amount })
+      toast({
+        title: 'Success',
+        description: 'Donation successful!'
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to donate to campaign.'
+      })
+    }
+  }
+
   const daysLeft = Math.ceil((Number(campaign.endTime) * 1000 - Date.now()) / (1000 * 60 * 60 * 24))
   const progress = Number((campaign.totalFunds * 100n) / campaign.target)
   const raisedAmount = formatKAIA(campaign.totalFunds)
   const targetAmount = formatKAIA(campaign.target)
+
+  // Aggregate donations by donor
+  const aggregateDonations = () => {
+    const donationMap = new Map<string, bigint>()
+    campaign.donators.forEach((donator, index) => {
+      const currentAmount = donationMap.get(donator) || BigInt(0)
+      donationMap.set(donator, currentAmount + campaign.donations[index])
+    })
+    return Array.from(donationMap.entries()).sort((a, b) => (b[1] > a[1] ? 1 : -1))
+  }
+
+  const aggregatedDonations = aggregateDonations()
 
   return (
     <div className='min-h-screen bg-black p-8'>
@@ -79,10 +116,11 @@ export default function CampaignPage() {
                 <img
                   src={`https://s2.coinmarketcap.com/static/img/coins/200x200/32880.png`}
                   className='w-12 h-12 flex items-center justify-center text-white'
-                ></img>
+                  alt="Creator's avatar"
+                />
                 <div>
                   <AddressCardHover address={campaign.owner} />
-                  <p className='text-sm text-zinc-500'>10 campaigns</p>
+                  {/* <p className='text-sm text-zinc-500'>10 campaigns</p> */}
                 </div>
               </div>
             </section>
@@ -97,12 +135,12 @@ export default function CampaignPage() {
             <section>
               <h2 className='text-xl font-semibold mb-4 text-zinc-200'>DONATORS</h2>
               <div className='space-y-4'>
-                {campaign.donators.map((donator, index) => (
-                  <div key={index} className='flex items-center justify-between text-zinc-400'>
+                {aggregatedDonations.map(([donator, amount], index) => (
+                  <div key={donator} className='flex items-center justify-between text-zinc-400'>
                     <span className='flex gap-2'>
                       {index + 1}. <AddressCardHover address={donator} />
                     </span>
-                    <span>{formatKAIA(campaign.donations[index])}</span>
+                    <span>{formatKAIA(amount)} KAIA</span>
                   </div>
                 ))}
               </div>
@@ -123,7 +161,7 @@ export default function CampaignPage() {
                   <p className='text-sm text-zinc-500 '>Raised of {targetAmount}</p>
                 </div>
                 <div className='text-center  border border-border p-4'>
-                  <p className='text-2xl font-bold text-white'>{campaign.donators.length}</p>
+                  <p className='text-2xl font-bold text-white'>{aggregatedDonations.length}</p>
                   <p className='text-sm text-zinc-500'>Total Backers</p>
                 </div>
               </div>
@@ -131,12 +169,25 @@ export default function CampaignPage() {
               {/* Fund Form */}
               <div className='space-y-4'>
                 <h3 className='text-lg font-semibold text-zinc-200'>Fund the campaign</h3>
-                <Input type='number' placeholder='KAIA 0.1' className='bg-zinc-800 border-zinc-700' />
+                <Input
+                  type='number'
+                  step='0.01'
+                  min='0.01'
+                  placeholder='KAIA 0.1'
+                  className='bg-zinc-800 border-zinc-700'
+                  onChange={(e) => setDonateAmount(e.target.value)}
+                />
                 <p className='text-sm text-zinc-400'>Back it because you believe in it.</p>
                 <p className='text-xs text-zinc-500'>
                   Support the project for no reward, just because it speaks to you.
                 </p>
-                <Button className='w-full bg-kaia hover:bg-kaia hover:opacity-85'>Fund Campaign</Button>
+                <Button
+                  onClick={() => handleDonate(parseFloat(donateAmount))}
+                  disabled={!donateAmount || parseFloat(donateAmount) <= 0}
+                  className='w-full bg-kaia hover:bg-kaia hover:opacity-85'
+                >
+                  Fund Campaign
+                </Button>
               </div>
             </div>
           </div>
@@ -146,6 +197,9 @@ export default function CampaignPage() {
   )
 }
 
-function formatKAIA(amount: bigint): string {
-  return (Number(amount) / 1e9).toFixed(2)
+function formatKAIA(amount: bigint, decimals = 2): string {
+  const intPart = amount / BigInt(10 ** 18) // Get the integer part
+  const decimalPart = amount % BigInt(10 ** 18) // Get the remainder (decimal part)
+  const decimalStr = (Number(decimalPart) / 10 ** 18).toFixed(decimals).split('.')[1] // Round
+  return `${intPart}.${decimalStr}`
 }
