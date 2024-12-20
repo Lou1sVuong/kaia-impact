@@ -10,11 +10,15 @@ import Link from 'next/link'
 import { useCampaign } from '@/hooks/use-campaign'
 import AddressCardHover from '@/components/address-card-hover'
 import { toast } from '@/hooks/use-toast'
+import { useAccount } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 export default function CampaignPage() {
   const params = useParams()
+  const { address } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const [campaign, setCampaign] = useState<Campaign | null>(null)
-  const { allCampaign, donateToCampaign } = useCampaign()
+  const { allCampaign, donateToCampaign, withdrawDonation, isPending } = useCampaign()
   const [donateAmount, setDonateAmount] = useState<string>('')
 
   useEffect(() => {
@@ -64,7 +68,6 @@ export default function CampaignPage() {
       })
       return
     }
-
     try {
       await donateToCampaign({ _id: params.id as string, amount })
       toast({
@@ -83,6 +86,13 @@ export default function CampaignPage() {
   const progress = Number((campaign.totalFunds * 100n) / campaign.target)
   const raisedAmount = formatKAIA(campaign.totalFunds)
   const targetAmount = formatKAIA(campaign.target)
+
+  const getTimeStatus = () => {
+    if (daysLeft <= 0) {
+      return 'Ended'
+    }
+    return `${daysLeft}`
+  }
 
   // Aggregate donations by donor
   const aggregateDonations = () => {
@@ -152,9 +162,9 @@ export default function CampaignPage() {
             <div className='sticky top-4 space-y-6 bg-zinc-900 p-6'>
               {/* Stats */}
               <div className='grid grid-cols-3 gap-4 mb-6'>
-                <div className='text-center border border-border p-4'>
-                  <p className='text-2xl font-bold text-white'>{daysLeft}</p>
-                  <p className='text-sm text-zinc-500'>Days Left</p>
+                <div className='flex flex-col justify-center items-center text-center border border-border p-4'>
+                  <p className='text-2xl font-bold text-white'>{getTimeStatus()}</p>
+                  {daysLeft < 0 ? '' : <p className='text-sm text-zinc-500'>Days Left</p>}
                 </div>
                 <div className='text-center  border border-border p-4'>
                   <p className='text-2xl font-bold text-white line-clamp-1'>{raisedAmount}</p>
@@ -188,6 +198,17 @@ export default function CampaignPage() {
                 >
                   Fund Campaign
                 </Button>
+                {campaign.owner === address ? (
+                  <Button className='w-full bg-kaia hover:bg-kaia hover:opacity-85'>Withdraw Funds</Button>
+                ) : null}
+                {campaign.donators.includes(address as string) && (
+                  <Button
+                    onClick={() => withdrawDonation({ _id: params.id as string })}
+                    className='w-full bg-kaia hover:bg-kaia hover:opacity-85'
+                  >
+                    Withdraw Donation
+                  </Button>
+                )}
               </div>
             </div>
           </div>

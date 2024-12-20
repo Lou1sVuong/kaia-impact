@@ -42,7 +42,7 @@ export function WalletProviders({ children }: { children: any }) {
           initialChain={kairos}
           showRecentTransactions={true}
           theme={darkTheme({
-            accentColor: '#4bdf74',
+            accentColor: '#bff009',
             accentColorForeground: 'white',
             borderRadius: 'none'
           })}

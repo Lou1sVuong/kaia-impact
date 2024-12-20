@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { CampaignCard } from '@/components/campaign-card'
-import { CreateCampaignForm } from '@/components/create-campaign-form'
 import { Button } from '@/components/ui/button'
 import { Campaign } from '@/types/campaign'
 import { useCampaign } from '@/hooks/use-campaign'
+import { CreateCampaignForm } from './create/create-campaign-form'
 
 export default function Home() {
   const { allCampaign } = useCampaign()

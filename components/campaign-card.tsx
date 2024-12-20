@@ -12,6 +12,13 @@ export function CampaignCard({ id, campaign }: CampaignCardProps) {
   const progress = Number((campaign.totalFunds * 100n) / campaign.target)
   const daysLeft = Math.ceil((Number(campaign.endTime) * 1000 - Date.now()) / (1000 * 60 * 60 * 24))
 
+  const getTimeStatus = () => {
+    if (daysLeft <= 0) {
+      return 'Ended'
+    }
+    return `${daysLeft} days left`
+  }
+
   return (
     <Link href={`/campaigns/${id}`}>
       <Card className='overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] bg-zinc-900 border-zinc-800'>
@@ -28,7 +35,7 @@ export function CampaignCard({ id, campaign }: CampaignCardProps) {
               <span className='text-zinc-400'>
                 {formatKAIA(campaign.totalFunds)} of {formatKAIA(campaign.target)} KAIA
               </span>
-              <span className='text-zinc-400'>{daysLeft} Days Left</span>
+              <span className={`text-zinc-400 ${daysLeft <= 0 ? 'text-red-500' : ''}`}>{getTimeStatus()}</span>
             </div>
             <Progress value={progress} className='h-1 mb-3' />
             <div className='flex items-center gap-2 text-xs text-zinc-500'>
